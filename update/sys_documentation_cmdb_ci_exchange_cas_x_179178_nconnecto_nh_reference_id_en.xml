@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_documentation element="x_179178_nconnecto_nh_reference_id" label="NH Reference ID" language="en" table="cmdb_ci_exchange_cas">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>x_179178_nconnecto_nh_reference_id</element>
+            <help/>
+            <hint/>
+            <label>NH Reference ID</label>
+            <language>en</language>
+            <name>cmdb_ci_exchange_cas</name>
+            <plural>NH Reference IDs</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2018-09-19 07:47:22</sys_created_on>
+            <sys_id>692b31c3dbe023003bd09c68db96194b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>NH Reference ID</sys_name>
+            <sys_package display_value="NConnectorBeta" source="x_179178_nconnecto">41a21d43db6023003bd09c68db96191a</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="NConnectorBeta">41a21d43db6023003bd09c68db96191a</sys_scope>
+            <sys_update_name>sys_documentation_cmdb_ci_exchange_cas_x_179178_nconnecto_nh_reference_id_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2018-09-19 07:47:22</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

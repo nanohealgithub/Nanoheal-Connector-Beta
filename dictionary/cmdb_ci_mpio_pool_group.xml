@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element audit="true" extends="cmdb_ci_storage_pool" label="Multipath IO Pool Group" max_length="40" name="cmdb_ci_mpio_pool_group" type="collection">
+        <element attributes="edge_encryption_enabled=true" label="NH Reference ID" max_length="50" name="x_179178_nconnecto_nh_reference_id" type="string"/>
+    </element>
+</database>
