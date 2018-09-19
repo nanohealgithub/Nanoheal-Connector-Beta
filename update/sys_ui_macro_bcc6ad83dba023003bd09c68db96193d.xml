@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ui_macro">
+    <sys_ui_macro action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>general</category>
+        <description>This will display all interactive information</description>
+        <media_type/>
+        <name>Nanoheal Interactive</name>
+        <scoped_name>x_179178_nconnecto_Nanoheal Interactive</scoped_name>
+        <sys_class_name>sys_ui_macro</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-09-19 06:18:37</sys_created_on>
+        <sys_id>bcc6ad83dba023003bd09c68db96193d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Nanoheal Interactive</sys_name>
+        <sys_package display_value="NConnectorBeta" source="x_179178_nconnecto">41a21d43db6023003bd09c68db96191a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NConnectorBeta">41a21d43db6023003bd09c68db96191a</sys_scope>
+        <sys_update_name>sys_ui_macro_bcc6ad83dba023003bd09c68db96193d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-19 06:18:37</sys_updated_on>
+        <xml><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+    <style>
+        .repair {
+            float: right;
+            width: 13%;
+            height: auto;
+            min-height: 35px;
+            background: #48b2e4;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 15px;
+            position: absolute;
+            right: 23px;
+            top: 23px;
+        }
+        .repair a{
+            color: white;
+            display: block;
+            text-decoration: none;
+            padding: 5px;
+        }
+        .servicetagBtn{
+            position: absolute;
+            top: 0px;
+            float: right;
+            left: 100%;
+        }
+        .list-group-item a{
+            display: block;
+            text-decoration: none; 
+        }
+        #toolboxList.list-group-item a{
+            color: black;
+        }
+        li.selected{
+           background: #48b2e4;
+        }
+        li.selected a {
+            color: white !important;
+        }
+        #toolboxList li a:hover {
+            color: inherit;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <div class="sn-widget sn-widget_padding-top sn-widget-textblock sn-widget-textblock_large sn-widget-textblock_center navigator-loading-message" aria-hidden="true" id="loading2">
+        <span class="icon-loading"></span>Loading...
+    </div>
+    <div id="errormessage2" class="info-text" style="display: none;">Please Configure Nanoheal Application</div>
+    <div id="info2" class="info-text"></div>
+    
+    <div id="errorTab2" style="display: none;">
+        <h5 class="info-text" id="servicetagErrorMsg2">CI Item Is Not Selected. Please Select Asset From CI or Enter The Computer Name and Click On Submit.</h5>
+        <div class="row info-text">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                <input type="text" class="form-control" id="servicetag2" autocomplete="off" placeholder="Computer Name" list="serviceTagList"  />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="sitelistDiv2" style="display: none;">
+                <select class="form-control" id="sitelist2">
+                    <option value="">Select Site</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            <input type="button" class="btn btn-default" onclick="currentTab=2;triggerAction(getMachineDetails)"
+                    value="Submit" id="servicetagBtn2" />
+            </div>
+        </div>
+    </div> 
+    
+    <div id="interactiveTab" style="display: none;margin-top: 10px;">
+        <div class="container" style="width:100%;">
+        <div class="row topheader">
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Machine Name:</strong></div>
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" id="machinename2"></div>
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Machine Status:</strong></div>
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" id="machinestatus2"></div>
+		</div>
+        <div class="resolution-page-wrap" localized="">
+            <div class="row clearfix" localized="" style="width:100%;">
+                <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 left equalHeight">
+                    <div id="toolboxLists" class="resolution-list customscroll mCustomScrollbar _mCS_8 mCS-autoHide mCS_no_scrollbar" style="position: relative; overflow: visible;">
+                        <ul id="toolboxList" class="list-group">
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12 right equalHeight">
+                    <input type="hidden" id="divId" localized="" />
+                    <input type="hidden" id="titleStore" localized="" value="The Advanced Troubleshooting section contains a variety of tools that are intended for use by trained technicians. Although you may see the list of fixes, only our agents are authorized to use these tools." />
+                    <input type="hidden" id="backParentId" localized="" value="2" />
+                    <div id="troubleshooterDiv" class="resolutions-desc" localized="">
+                        <h3 id="mainParentTitle" localized=""></h3>
+                        <!--                                        <h3 id="backBtn" title="Back" style="float: right;cursor: pointer;display: none;" class="icon-ic_arrow_back_24px backBtn" onclick="callBackButton();"></h3>-->
+                        <p id="parentDesc" localized="">Use these troubleshooting and resolution tools to quickly and easily resolve many common device issues. Choose a category on the left and then select the fix that best matches the issue you are experiencing.</p>
+                        <div id="listDiv" class="resolutions-repair customscroll mCustomScrollbar _mCS_9 mCS-autoHide" localized="" style="position: relative; overflow: visible;"><div id="mCSB_9" class="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside" style="max-height: none;" tabindex="0" localized=""><div id="mCSB_9_container" class="mCSB_container" style="position:relative;top:0;left:0;max-height: 400px;" dir="ltr">
+                                    <ul id="clickList" class="list-group">
+
+
+                                    </ul>
+                                </div></div><div id="mCSB_9_scrollbar_vertical" class="mCSB_scrollTools mCSB_9_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical" style="display: block;" localized=""><div class="mCSB_draggerContainer" localized=""><div id="mCSB_9_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 50px; top: 0px; height: 163px; display: block; max-height: 297px;" localized=""><div class="mCSB_dragger_bar" style="line-height: 50px;" localized=""></div></div><div class="mCSB_draggerRail" localized=""></div></div></div></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+
+        function getInterativeData(sessionData) {
+            var authorization = sessionData.Authorization, authToken = sessionData.AuthToken;
+            if (serviceTag == '') {
+                serviceTag = document.getElementById('servicetag2').value;
+            }
+            if (serviceTag != "") {
+                //document.getElementById("errorTab2").style.display = "none";
+                //Get Profile Data call   
+                var profileRequest = new XMLHttpRequest();
+                document.getElementById("loading2").style.display = "block";
+                var profileResponse = null;
+                profileRequest.onreadystatechange = function () {
+                    if (profileRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                        document.getElementById("loading2").style.display = "none";
+                        document.getElementById('parentDesc').innerHTML = "Use these troubleshooting and resolution tools to quickly and easily resolve many common device issues. Choose a category on the left and then select the fix that best matches the issue you are experiencing.";
+                        document.getElementById('clickList').innerHTML = "";
+                        if (profileRequest.status == 200) {
+                            document.getElementById("interactiveTab").style.display = "block";
+                            profileResponse = JSON.parse(profileRequest.responseText);
+                            var toolboxlistHTML = '';
+                            for (var i = 0; i != profileResponse.data.length; i++) {
+                                var params = "this, '" + profileResponse.data[i].parentId + "', '" + profileResponse.data[i].profile + "', '" + profileResponse.data[i].dart + "', '" + profileResponse.data[i].variable + "', '" + profileResponse.data[i].shortDesc + "', '" + profileResponse.data[i].tiledesc + "','" + profileResponse.data[i].page + "', '" + profileResponse.data[i].menuItem + "','main'";
+                                toolboxlistHTML += '<li class="list-group-item"><a href="javascript:;" title="' + profileResponse.data[i].profile + '" onclick="' + profileResponse.data[i].clickfun + '('+params+');" localized="" style="">' + profileResponse.data[i].profile.replace(/[^\w\s',.?()-]/gi, '') + '</a></li>';
+                            }
+                            document.getElementById('toolboxList').innerHTML = toolboxlistHTML;
+                        }
+                        else if(profileRequest.status == 401){
+                            profileResponse = JSON.parse(profileRequest.responseText);
+                            document.getElementById('interactiveTab').style.display = 'none';
+                            document.getElementById('info2').innerHTML = profileResponse.msg;
+                            document.getElementById('info2').style.display = 'block';
+                        }
+                        else{
+                            document.getElementById('interactiveTab').style.display = 'none';
+                            document.getElementById('info2').innerHTML = '<red>Something went wrong!</red>';
+                            document.getElementById('info2').style.display = 'block';
+                        }
+                    }
+                };
+                try {
+                    if(authorization == "") throw "Authorization String Not set In getProfileData Request!";
+                    if(authToken == "") throw "Authtoken String Not set In getProfileData Request!";
+                    profileRequest.open("POST", baseUrl+"/api/profile/getProfileData");
+                    profileRequest.setRequestHeader("Authorization", "Bearer " + authorization);
+                    profileRequest.setRequestHeader("X-API-KEY", authToken);
+                    profileRequest.send(JSON.stringify({ "scop": "machine", "scopvalue": serviceTag, "passlevel": passlevel, "machine": serviceTag, "os": "Windows", "pageId": "1", "ossub": "NA", "AgentName": window.NOW.user_name, "AgentEmail": window.NOW.user_email}));
+                } catch (error) {
+                    document.getElementById('interactiveTab').style.display = 'none';
+                    document.getElementById('info2').innerHTML = '<red>Something went wrong!</red>';
+                    document.getElementById('info2').style.display = 'block';
+                }
+            }
+            else {
+                document.getElementById("errorTab2").style.display = "block";
+                document.getElementById("interactiveTab").style.display = "none";
+            }
+        }
+
+        function clickl1level(thisVal, parentId, profile, dart, variable, varValue, description, page, menuitem, type) {
+            if(type=='main'){
+                var els = document.getElementsByClassName('list-group-item selected')
+                while (els[0]) {
+                    els[0].classList.remove('selected')
+                }
+            }
+            thisVal.parentElement.classList.add('selected');
+            var profileRequest = new XMLHttpRequest();
+            var profileResponse = null;
+            var authorization, authToken = "";
+            if (existingsession = checkSessionValidity()) {
+                authorization = existingsession.Authorization;
+                authToken =  existingsession.AuthToken;
+            }
+            else {
+                var newsession = createNewSession(false);
+                authorization = newsession.Authorization;
+                authToken =  newsession.AuthToken;
+            }
+            profileRequest.onreadystatechange = function () {
+                if (profileRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                    if (profileRequest.status == 200) {
+                        profileResponse = JSON.parse(profileRequest.responseText);
+                        var toolboxlistHTML = '';
+                        for (var i = 0; i != profileResponse.data.length; i++) {
+                            var params = "this, '" + profileResponse.data[i].parentId + "', '" + profileResponse.data[i].profile + "', '" + profileResponse.data[i].dart + "', '" + profileResponse.data[i].variable + "', '" + profileResponse.data[i].shortDesc + "', '" + profileResponse.data[i].shortDesc + "','" + profileResponse.data[i].page + "', '" + profileResponse.data[i].menuItem +"','sub'";
+                            toolboxlistHTML += '<li class="list-group-item"><div class="clearfix" localized="">' +
+                                    '<div class="reset" localized="" style="width: 80%;"><h4 localized="">' + profileResponse.data[i].profile +
+                                    '</h4><p localized="">' + decodeURIComponent((profileResponse.data[i].description + '').replace(/\+/g, '%20')) + '</p></div>' +
+                                    '<div id="maximize11" class="repair" localized="" style="display: block;">' +
+                                    '<a href="javascript:;" onclick="' + profileResponse.data[i].clickfun + '('+params+');">';
+                            var extraHtml = "";
+                            if (profileResponse.data[i].clickfun == "clickl3level") {
+                                var divid="interactive_"+profileResponse.data[i].parentId+"_"+profileResponse.data[i].profile;
+                                divid = divid.replace(/\s/g,'');
+                                toolboxlistHTML += 'Run';
+                                extraHtml = '<div id="'+divid+'" style="min-height: 18px;padding-top: 10px;padding-left: 15px;"></div>';
+                            }
+                            else {
+                                toolboxlistHTML += '<i class="fa fa-angle-right" aria-hidden="true"></i>';
+                            }
+                            toolboxlistHTML += '</a></div></div>'+extraHtml+'</li>';
+                        }
+                        document.getElementById('parentDesc').innerHTML = "";
+                        document.getElementById('clickList').innerHTML = toolboxlistHTML;
+                    }
+                    else if (profileRequest.status == 400) {
+                        console.log('There was an error 400');
+                    }
+                    else {
+                        console.log('something else other than 200 was returned');
+                    }
+                }
+            };
+            try {
+                if(authorization == "") throw "Authorization String Not set In getProfileData Request!";
+                if(authToken == "") throw "Authtoken String Not set In getProfileData Request!";
+                profileRequest.open("POST", baseUrl+"/api/profile/getProfileData");
+                profileRequest.setRequestHeader("Authorization", "Bearer " + authorization);
+                profileRequest.setRequestHeader("X-API-KEY", authToken);
+                profileRequest.send(JSON.stringify({ "scop": "machine", "scopvalue": serviceTag, "passlevel": passlevel, "machine": serviceTag, "os": "Windows", "pageId": parentId, "backId": page, "menuitem": profile, "ossub": "NA", "AgentName": window.NOW.user_name, "AgentEmail": window.NOW.user_email}));
+            } catch (error) {
+                console.log(error);
+            }
+            
+        }
+
+        function clickl3level(thisVal, parentId, profile, dart, variable, varValue, description, page, menuitem, type) {
+            var authorization, authToken = "";
+            if (existingsession = checkSessionValidity()) {
+                authorization = existingsession.Authorization;
+                authToken =  existingsession.AuthToken;
+            }
+            else {
+                var newsession = createNewSession(false);
+                authorization = newsession.Authorization;
+                authToken =  newsession.AuthToken;
+            }
+            var profileRequest = new XMLHttpRequest();
+            notificationdiv = "interactive_"+parentId+"_"+profile;
+            notificationdiv = notificationdiv.replace(/\s/g,'');
+            profileRequest.onreadystatechange = function () {
+                if (profileRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                    if (profileRequest.status == 200) {
+                        profileResponse = JSON.parse(profileRequest.responseText);
+                        if(profileResponse.serviceTagSupported != ""){
+                            if(profileResponse.serviceTagSupported != undefined){
+                                var JobData = {};
+                                JobData['Type'] = 'ExecuteJob';
+                                JobData['ServiceTag'] = serviceTag;
+                                addNotes(profile+ " Tile Pushed Successfully");
+                                ws.send(JSON.stringify(JobData));
+                                thisVal.innerHTML = "Solution Pushed";
+                                thisVal.style.pointerEvents = "none";
+                                thisVal.parentElement.style.backgroundColor = "green";
+                            }
+                            else{
+                                thisVal.innerHTML = "Invalid Service Tag";
+                                thisVal.style.pointerEvents = "none";
+                                thisVal.parentElement.style.backgroundColor = "red";
+                            }
+                        }
+                        else{
+                            thisVal.innerHTML = "Invalid Service Tag";
+                            thisVal.style.pointerEvents = "none";
+                            thisVal.parentElement.style.backgroundColor = "red";
+                        }
+                    }
+                    else if (profileRequest.status == 400) {
+                        console.log('There was an error 400');
+                    }
+                    else {
+                        console.log('something else other than 200 was returned');
+                    }
+                }
+            };
+            try {
+                if(authorization == "") throw "Authorization String Not set In Export Machine History Request!";
+                if(authToken == "") throw "Authtoken String Not set In Export Machine History Request!";
+                if(serviceTag == "") throw "Servicetag Not set In Interactive Fix Request!";
+                profileRequest.open("POST", baseUrl+"/api/profile/actionInteractive");
+                profileRequest.setRequestHeader("Authorization", "Bearer " + authorization);
+                profileRequest.setRequestHeader("X-API-KEY", authToken);
+                profileRequest.send(JSON.stringify({ "scop": "machine", "scopvalue": serviceTag, "passlevel": passlevel, "machine": serviceTag, "shortDesc": description, "profileName": profile, "dartNumber": dart, "variable": variable, "snusername": serviceNowUsername, "AgentName": window.NOW.user_name, "AgentEmail": window.NOW.user_email}));
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('servicetagBtn2').addEventListener('click', function() {
+                serviceTag = document.getElementById('servicetag2').value;
+                if (serviceTag == '') {
+                    document.getElementById("servicetag2").style.borderColor = "red";
+                }
+            });
+
+            document.getElementById('sitelist2').addEventListener('change', function () {
+                passlevel =  document.getElementById('sitelist2').value;
+                document.getElementById('sitelist1').selectedIndex = document.getElementById('sitelist2').selectedIndex;
+                document.getElementById('sitelist3').selectedIndex = document.getElementById('sitelist2').selectedIndex;
+                document.getElementById('sitelist5').selectedIndex = document.getElementById('sitelist2').selectedIndex;
+            });
+        });
+    </script>
+</j:jelly>]]></xml>
+    </sys_ui_macro>
+</record_update>

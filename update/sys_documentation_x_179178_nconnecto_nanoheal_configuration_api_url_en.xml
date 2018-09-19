@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_documentation element="api_url" label="API Url" language="en" table="x_179178_nconnecto_nanoheal_configuration">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>api_url</element>
+            <help/>
+            <hint/>
+            <label>API Url</label>
+            <language>en</language>
+            <name>x_179178_nconnecto_nanoheal_configuration</name>
+            <plural>API Urls</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2018-09-19 05:34:18</sys_created_on>
+            <sys_id>18bc194fdb6023003bd09c68db9619ec</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>API Url</sys_name>
+            <sys_package display_value="NConnectorBeta" source="x_179178_nconnecto">41a21d43db6023003bd09c68db96191a</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="NConnectorBeta">41a21d43db6023003bd09c68db96191a</sys_scope>
+            <sys_update_name>sys_documentation_x_179178_nconnecto_nanoheal_configuration_api_url_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2018-09-19 05:34:18</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

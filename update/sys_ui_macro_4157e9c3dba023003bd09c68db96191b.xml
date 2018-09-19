@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ui_macro">
+    <sys_ui_macro action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>general</category>
+        <description>This willl display Action History</description>
+        <media_type/>
+        <name>Nanoheal Action History</name>
+        <scoped_name>x_179178_nconnecto_Nanoheal Action History</scoped_name>
+        <sys_class_name>sys_ui_macro</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-09-19 06:22:05</sys_created_on>
+        <sys_id>4157e9c3dba023003bd09c68db96191b</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Nanoheal Action History</sys_name>
+        <sys_package display_value="NConnectorBeta" source="x_179178_nconnecto">41a21d43db6023003bd09c68db96191a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NConnectorBeta">41a21d43db6023003bd09c68db96191a</sys_scope>
+        <sys_update_name>sys_ui_macro_4157e9c3dba023003bd09c68db96191b</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-19 06:22:05</sys_updated_on>
+        <xml><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+    <style>
+        .export {
+            width: 80px;
+            height: auto;
+            min-height: 35px;
+            background: #48b2e4;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 15px;
+            margin: 0px 1% 1% auto;
+        }
+        .export a{
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 6% 0%;
+        }
+        .historylist{
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .glyphicon {
+            margin-right: 5px;
+        }
+        .disable_a_href{
+            pointer-events: none;
+        }
+    </style>
+    <div class="sn-widget sn-widget_padding-top sn-widget-textblock sn-widget-textblock_large sn-widget-textblock_center navigator-loading-message" aria-hidden="true" id="loading5">
+        <span class="icon-loading"></span>Loading...
+    </div>
+    <div id="errormessage5" class="info-text" style="display: none;">Please Configure Nanoheal Application</div>
+    <div id="info5" class="info-text"></div>
+    <div id="errorTab5" style="display: none;">
+        <h5 class="info-text" id="servicetagErrorMsg5">CI Item Is Not Selected. Please Select Asset From CI or Enter The Computer Name and Click On Submit.</h5>
+        <div class="row info-text">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                <input type="text" class="form-control" id="servicetag5" autocomplete="off" placeholder="Computer Name" list="serviceTagList"  />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="sitelistDiv5" style="display: none;">
+                <select class="form-control" id="sitelist5">
+                    <option value="">Select Site</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                <input type="button" class="btn btn-default" onclick="currentTab = 5;triggerAction(getMachineDetails)"
+                       value="Submit" id="servicetagBtn5" />
+            </div>
+        </div>
+    </div>
+    <div id="actionHistoryTab" style="display: none;margin-top: 10px;">
+        <div class="container" style="max-height: 500px;overflow: auto;width:100%">
+            <div class="row topheader" style="width: 100%;">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Machine Name:</strong></div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" id="machinename5"></div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Machine Status:</strong></div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" id="machinestatus5"></div>
+                <div class="export" localized="" style="display: block;float: right">
+                    <a href="javascript:;" onclick="triggerAction(getActionHistory);">
+                        <span class="glyphicon glyphicon-refresh"></span> Refresh
+                    </a>
+                </div>
+                <div id="maximize11" class="export" localized="" style="display: block;float: right">
+                    <a href="javascript:;" onclick="exportActionHistory(this);">Export</a>
+                </div>
+            </div>
+            <div class="historylist">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"><strong>SL No</strong></div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Machine Name</strong></div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Agent Name</strong></div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Created Time</strong></div>
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"><strong>Profile Name</strong></div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Status</strong></div>
+                        </div>
+                    </li>
+                    <span id="actionList">
+
+                    </span>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        // Getting Action history from API
+        function getActionHistory(sessionData) {
+            var authorization = sessionData.Authorization, authToken = sessionData.AuthToken;
+            if (serviceTag == '') {
+                serviceTag = document.getElementById('servicetag5').value;
+            }
+            if (serviceTag != "") {
+                document.getElementById("errormessage5").style.display = "none";
+                //document.getElementById("errorTab5").style.display = "none";             
+                var historyRequest = new XMLHttpRequest();
+                document.getElementById("loading5").style.display = "block";
+                var historyResponse = null;
+                historyRequest.onreadystatechange = function () {
+                    if (historyRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                        var actionHistoryHTML = "";
+                        document.getElementById("loading5").style.display = "none";
+                        if (historyRequest.status == 200) {
+                            document.getElementById("actionHistoryTab").style.display = "block";
+                            try {
+                                historyResponse = JSON.parse(historyRequest.responseText);
+                                for (var i = 0; i != historyResponse.length; i++) {
+                                    var style = "";
+                                    switch (historyResponse[i].JobStatus) {
+                                        case 'Completed':
+                                            style = "color: #008000;";
+                                            break;
+                                        case 'Failed':
+                                            style = "color: #FF0000;";
+                                            break;
+                                        case 'Pending':
+                                            style = "color: #FFA500;";
+                                            break;
+                                    }
+                                    actionHistoryHTML += '<li class="list-group-item"><div class="row">' +
+                                            '<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">' + (i + 1) + '</div>' +
+                                            '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">' + historyResponse[i].MachineTag + '</div>' +
+                                            '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">' + historyResponse[i].AgentName + '</div>' +
+                                            '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">' + historyResponse[i].JobCreatedTime + '</div>' +
+                                            '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">' + historyResponse[i].ProfileName + '</div>' +
+                                            '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="' + style + '">' + historyResponse[i].JobStatus + '</div>' +
+                                            '</div></li>';
+                                }
+                                if (historyResponse.length == 0) {
+                                    actionHistoryHTML += '<li class="list-group-item"><div class="row"><div class="col-md-2"></div>' +
+                                            '<div class="col-md-2"></div><div class="col-md-2"></div>' +
+                                            '<div class="col-md-4"></div><div class="col-md-2"></div></div></li>';
+                                }
+                            } catch (error) {
+                                actionHistoryHTML = "<red>Something went wrong.!</red>";
+                            }
+                            document.getElementById('actionList').innerHTML = actionHistoryHTML;
+                        } else if (historyRequest.status == 401) {
+                            historyResponse = JSON.parse(historyRequest.responseText);
+                            document.getElementById('actionHistoryTab').style.display = 'none';
+                            document.getElementById('info5').innerHTML = historyResponse.msg;
+                            document.getElementById('info5').style.display = 'block';
+                        } else {
+                            document.getElementById('actionHistoryTab').style.display = 'none';
+                            document.getElementById('info5').innerHTML = "<red>Something went wrong!</red>";
+                            document.getElementById('info5').style.display = 'block';
+                        }
+                    }
+                }
+                try {
+                    if (authorization == "")
+                        throw "Authorization String Not set In Export Machine History Request!";
+                    if (authToken == "")
+                        throw "Authtoken String Not set In Export Machine History Request!";
+                    if (serviceTag == "")
+                        throw "Servicetag Not set In Export Machine History Request!";
+                    historyRequest.open("POST", baseUrl + "/api/profile/machineHistory");
+                    historyRequest.setRequestHeader("Authorization", "Bearer " + authorization);
+                    historyRequest.setRequestHeader("X-API-KEY", authToken);
+                    historyRequest.send(JSON.stringify({"scop": "machine", "scopvalue": serviceTag, "passlevel": passlevel, "machine": serviceTag, "AgentName": window.NOW.user_name, "AgentEmail": window.NOW.user_email}));
+                } catch (error) {
+                    console.log(error);
+                }
+            } else {
+                document.getElementById("errorTab5").style.display = "block";
+                document.getElementById("actionHistoryTab").style.display = "none";
+            }
+        }
+
+        function triggerDownload(sessionData) {
+            var authorization = sessionData.Authorization, authToken = sessionData.AuthToken;
+            var historyRequest = new XMLHttpRequest();
+            historyRequest.onreadystatechange = function () {
+                if (historyRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                    if (historyRequest.status == 200) {
+                        var fname = "actionhistory.csv"
+                        if (navigator.appVersion.toString().indexOf('.NET') > 0) { // for IE browser
+                            var blob = new Blob([historyRequest.responseText], {
+                                type: "text/csv"
+                            });
+                            window.navigator.msSaveBlob(blob, fname);
+                        } else { // for other browsers
+                            var hiddenElement = document.createElement('a');
+                            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(historyRequest.responseText);
+                            hiddenElement.target = '_blank';
+                            hiddenElement.download = fname;
+                            hiddenElement.click();
+                        }
+                    }
+                }
+            }
+            try {
+                if (authorization == "")
+                    throw "Authorization String Not set In Export Machine History Request!";
+                if (authToken == "")
+                    throw "Authtoken String Not set In Export Machine History Request!";
+                if (serviceTag == "")
+                    throw "Servicetag Not set In Export Machine History Request!";
+                historyRequest.open("POST", baseUrl + "/api/profile/exportmachineHistory");
+                historyRequest.setRequestHeader("Authorization", "Bearer " + authorization);
+                historyRequest.setRequestHeader("X-API-KEY", authToken);
+                historyRequest.send(JSON.stringify({"scop": "machine", "scopvalue": serviceTag, "passlevel": passlevel, "machine": serviceTag, "AgentName": window.NOW.user_name, "AgentEmail": window.NOW.user_email}));
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        function exportActionHistory(obj) {
+            obj.classList.add("disable_a_href");
+            var authorization, authToken = "";
+            if (existingsession = checkSessionValidity()) {
+                triggerDownload(existingsession);
+            } else {
+                createNewSession(triggerDownload);
+            }
+            setInterval(function () {
+                obj.classList.remove("disable_a_href");
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('servicetagBtn5').addEventListener('click', function () {
+                serviceTag = document.getElementById('servicetag5').value;
+                if (serviceTag == '') {
+                    document.getElementById("servicetag5").style.borderColor = "red";
+                }
+            });
+            document.getElementById('sitelist5').addEventListener('change', function () {
+                passlevel = document.getElementById('sitelist5').value;
+                document.getElementById('sitelist2').selectedIndex = document.getElementById('sitelist5').selectedIndex;
+                document.getElementById('sitelist3').selectedIndex = document.getElementById('sitelist5').selectedIndex;
+                document.getElementById('sitelist1').selectedIndex = document.getElementById('sitelist5').selectedIndex;
+            });
+        });
+    </script>
+</j:jelly>]]></xml>
+    </sys_ui_macro>
+</record_update>

@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ui_macro">
+    <sys_ui_macro action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>general</category>
+        <description>This will display all notification information</description>
+        <media_type/>
+        <name>Nanoheal Notification</name>
+        <scoped_name>x_179178_nconnecto_Nanoheal Notification</scoped_name>
+        <sys_class_name>sys_ui_macro</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-09-19 06:17:52</sys_created_on>
+        <sys_id>3186e983dba023003bd09c68db9619e3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Nanoheal Notification</sys_name>
+        <sys_package display_value="NConnectorBeta" source="x_179178_nconnecto">41a21d43db6023003bd09c68db96191a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NConnectorBeta">41a21d43db6023003bd09c68db96191a</sys_scope>
+        <sys_update_name>sys_ui_macro_3186e983dba023003bd09c68db9619e3</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-19 06:17:52</sys_updated_on>
+        <xml><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+    <style>
+        .servicetagBtn{
+            position: absolute;
+            top: 0px;
+            float: right;
+            left: 100%;
+        }
+        .disabledclick{
+            pointer-events: none;
+        }
+        .panel-title a{
+            text-decoration: none;
+        }
+    </style>
+    <div class="sn-widget sn-widget_padding-top sn-widget-textblock sn-widget-textblock_large sn-widget-textblock_center navigator-loading-message" aria-hidden="true" id="loading3">
+        <span class="icon-loading"></span>Loading...
+    </div>
+    <div id="errormessage3" class="info-text" style="display: none;">Please Configure Nanoheal Application</div>
+    <div id="info3" class="info-text"></div>
+    <div id="errorTab3" style="display: none;">
+       <h5 class="info-text" id="servicetagErrorMsg3">CI Item Is Not Selected. Please Select Asset From CI or Enter The Computer Name and Click On Submit.</h5>
+        <div class="row info-text">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                <input type="text" class="form-control" id="servicetag3" autocomplete="off" placeholder="Computer Name" list="serviceTagList"  />
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" id="sitelistDiv3" style="display: none;">
+                <select class="form-control" id="sitelist3">
+                    <option value="">Select Site</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            <input type="button" class="btn btn-default" onclick="currentTab=3;triggerAction(getMachineDetails)"
+                    value="Submit" id="servicetagBtn3" />
+            </div>
+        </div>
+    </div>
+    <div id="notificationTab" style="display: none;margin-top: 10px;">
+        <div class="container" style="width:100%;">
+        <div class="row topheader">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Machine Name:</strong></div> <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" id="machinename3"></div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><strong>Machine Status:</strong></div> <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" id="machinestatus3"></div>
+            <div>
+                <div class="export" localized="" style="display: block;float: right">
+                    <a href="javascript:;" onclick="triggerAction(getNotificationData);">
+                        <span class="glyphicon glyphicon-refresh"></span> Refresh
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#criticalL1" onclick="changeIcon(this)"><i class="glyphicon glyphicon-plus"></i><span style="padding:10px;">Critical</span><span class="badge padiing" id="criticalCnt"></span></a>
+                    </h4>
+                    <div id="criticalL1" class="panel-collapse collapse" style="padding-top: 15px;">
+
+                    </div>
+                </div>
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#majorL1" onclick="changeIcon(this)"><i class="glyphicon glyphicon-plus"></i><span style="padding:10px;">Major</span><span class="badge padiing" id="majorCnt"></span></a>
+                    </h4>
+                    <div id="majorL1" class="panel-collapse collapse" style="padding-top: 15px;">
+
+                    </div>
+                </div>
+
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#minorL1" onclick="changeIcon(this)"><i class="glyphicon glyphicon-plus"></i><span style="padding:10px;">Minor</span><span class="badge padiing" id="minorCnt"></span></a>
+                    </h4>
+                    <div id="minorL1" class="panel-collapse collapse" style="padding-top: 15px;">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+    </div>
+    
+
+    <script type="text/javascript">
+        
+        var currentntNotificationData = "";
+        var nocName = "";
+        var nid = "";
+
+        // Getting Notification data from Nanoheal API
+        function getNotificationData(sessionData) {
+            var authorization = sessionData.Authorization, authToken = sessionData.AuthToken;
+            if (serviceTag == '') {
+                serviceTag = document.getElementById('servicetag3').value;
+            }
+            if (serviceTag != "") {
+                document.getElementById("errormessage3").style.display = "none";
+                //document.getElementById("errorTab3").style.display = "none";
+                // Get Notification Data
+                var getNotificationRequest = new XMLHttpRequest();
+                document.getElementById("loading3").style.display = "block";
+                getNotificationRequest.onreadystatechange = function () {
+                    if (getNotificationRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                        document.getElementById("loading3").style.display = "none";
+                        if (getNotificationRequest.status == 200) {
+                            notificationResponse = JSON.parse(getNotificationRequest.responseText);
+                            document.getElementById("criticalCnt").innerHTML = notificationResponse.criticalcnt;
+                            document.getElementById("majorCnt").innerHTML = notificationResponse.majorcnt;
+                            document.getElementById("minorCnt").innerHTML = notificationResponse.minorcnt;
+                            document.getElementById("machinestatus1").innerHTML = notificationResponse.machinestatus;
+                            document.getElementById("machinename1").innerHTML = notificationResponse.machinename;
+                            document.getElementById("machinestatus2").innerHTML = notificationResponse.machinestatus;
+                            document.getElementById("machinename2").innerHTML = notificationResponse.machinename;
+                            document.getElementById("machinestatus3").innerHTML = notificationResponse.machinestatus;
+                            document.getElementById("machinename3").innerHTML = notificationResponse.machinename;
+                            document.getElementById("machinestatus5").innerHTML = notificationResponse.machinestatus;
+                            document.getElementById("machinename5").innerHTML = notificationResponse.machinename;
+                            var criticalHtml = '';
+                            var majorHtml = '';
+                            var minorHtml = '';
+                            for (var i = 0; i != notificationResponse.criticalcnt; i++) {
+                                if(notificationResponse[0].critical[i] !== undefined){
+                                    criticalHtml += '<div class="panel-heading"><h2 class="panel-title">' +
+                                            '<a data-toggle="collapse" href="#criticalL2Item' + i + '" onclick="changeIcon(this)"><i class="glyphicon glyphicon-plus"></i><span style="padding:10px;">' +
+                                            notificationResponse[0].critical[i].nocname + '</span><span class="badge padiing">' + notificationResponse[0].critical[i].count + '</span></a></h2>' +
+                                            '<div id="criticalL2Item' + i + '" class="panel-collapse collapse" style="padding-top: 15px;">' +
+                                            '<ul class="list-group">' +
+                                            '<li class="list-group-item"><div class="row">' +
+                                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><strong>Notify Date</strong></div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><strong>Event Count</strong></div><div class="col-md-4"><strong>Status</strong></div></div></li>';
+                                    for (var j = 0; j != notificationResponse[0].critical[i].count; j++) {
+                                        criticalHtml += '<li class="list-group-item"><div class="row">' +
+                                                '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">' + notificationResponse[0].critical[i].details[j].notifydate + '</div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">' + notificationResponse[0].critical[i].details[j].eventcount + '</div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">' + notificationResponse[0].critical[i].details[j].status + '</div></div></li>';
+                                    }
+                                    var datastring =  notificationResponse[0].critical[i].nid + ",'" + notificationResponse[0].critical[i].nocname + "','critical'," + i;
+                                    criticalHtml += '</ul><div class="row"><button type="button" onclick="getProfileTiles(' + datastring + ')" class="btn btn-danger" style="float: right;margin-right:15px;">Fix Now</button></div></div></div>';
+                                }
+                            }
+                            if (notificationResponse.criticalcnt == 0)
+                                criticalHtml += '<span style="margin-left: 3%;">No Critical Notification Found.!</span>';
+                            document.getElementById("criticalL1").innerHTML = criticalHtml;
+                            for (var i = 0; i != notificationResponse.majorcnt; i++) {
+                                if(notificationResponse[0].major[i] !== undefined){
+                                    majorHtml += '<div class="panel-heading"><h2 class="panel-title">' +
+                                            '<a data-toggle="collapse" href="#majorL2Item' + i + '" onclick="changeIcon(this)"><i class="glyphicon glyphicon-plus"></i><span style="padding:10px;">' +
+                                            notificationResponse[0].major[i].nocname + '</span><span class="badge padiing">' + notificationResponse[0].major[i].count + '</span></a></h2>' +
+                                            '<div id="majorL2Item' + i + '" class="panel-collapse collapse" style="padding-top: 15px;">' +
+                                            '<ul class="list-group">' +
+                                            '<li class="list-group-item"><div class="row">' +
+                                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><strong>Notify Date</strong></div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><strong>Event Count</strong></div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><strong>Status</strong></div></div></li>';
+                                    for (var j = 0; j != notificationResponse[0].major[i].count; j++) {
+                                        majorHtml += '<li class="list-group-item"><div class="row">' +
+                                                '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">' + notificationResponse[0].major[i].details[j].notifydate + '</div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">' + notificationResponse[0].major[i].details[j].eventcount + '</div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">' + notificationResponse[0].major[i].details[j].status + '</div></div></li>';
+                                    }
+                                    var datastring =  notificationResponse[0].major[i].nid + ",'" + notificationResponse[0].major[i].nocname + "','major'," + i;
+                                    majorHtml += '</ul><div class="row"><button type="button" onclick="getProfileTiles(' +datastring+ ')" class="btn btn-danger" style="float: right;margin-right:15px;">Fix Now</button></div></div></div>';
+                                }
+                            }
+                            if (notificationResponse.majorcnt == 0)
+                                majorHtml += '<span style="margin-left: 3%;">No Major Notification Found.!</span>';
+                            document.getElementById("majorL1").innerHTML = majorHtml;
+                            for (var i = 0; i != notificationResponse.minorcnt; i++) {
+                                if(notificationResponse[0].minor[i] !== undefined){
+                                    minorHtml += '<div class="panel-heading"><h2 class="panel-title">' +
+                                            '<a data-toggle="collapse" href="#minorL2Item' + i + '" onclick="changeIcon(this)"><i class="glyphicon glyphicon-plus"></i><span style="padding:10px;">' +
+                                            notificationResponse[0].minor[i].nocname + '</span><span class="badge padiing">' + notificationResponse[0].minor[i].count + '</span></a></h2>' +
+                                            '<div id="minorL2Item' + i + '" class="panel-collapse collapse" style="padding-top: 15px;">' +
+                                            '<ul class="list-group">' +
+                                            '<li class="list-group-item"><div class="row">' +
+                                            '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><strong>Notify Date</strong></div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><strong>Event Count</strong></div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><strong>Status</strong></div></div></li>';
+                                    for (var j = 0; j != notificationResponse[0].minor[i].count; j++) {
+                                        minorHtml += '<li class="list-group-item"><div class="row">' +
+                                                '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">' + notificationResponse[0].minor[i].details[j].notifydate + '</div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">' + notificationResponse[0].minor[i].details[j].eventcount + '</div><div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">' + notificationResponse[0].minor[i].details[j].status + '</div></div></li>';
+                                    }
+                                    var datastring =  notificationResponse[0].minor[i].nid + ",'" + notificationResponse[0].minor[i].nocname + "','minor'," + i;
+                                    minorHtml += '</ul><div class="row"><button type="button" onclick="getProfileTiles(' + datastring + ')" class="btn btn-danger" style="float: right;margin-right:15px;">Fix Now</button></div></div></div>';
+                                }
+                            }
+                            if (notificationResponse.minorcnt == 0)
+                                minorHtml += '<span style="margin-left: 3%;">No Minor Notification Found.!</span>';
+                            document.getElementById("minorL1").innerHTML = minorHtml;
+                            document.getElementById("notificationTab").style.display = "block";
+                        }
+                        else if(getNotificationRequest.status == 401){
+                            notificationResponse = JSON.parse(getNotificationRequest.responseText);
+                            document.getElementById('notificationTab').style.display = 'none';
+                            document.getElementById('info3').innerHTML = notificationResponse.msg;
+                            document.getElementById('info3').style.display = 'block';
+                        }
+                        else{
+                            document.getElementById('notificationTab').style.display = 'none';
+                            document.getElementById('info3').innerHTML = "<red>Something went wrong!</red>";
+                            document.getElementById('info3').style.display = 'block';
+                        }
+                    }
+                };
+                try {
+                    if(authorization == "") throw "Authorization String Not set In Notification Summary Request!";
+                    if(authToken == "") throw "Authtoken String Not set In Notification Summary Request!";
+                    if(serviceTag == "") throw "Servicetag Not set In Notification Summary Request!";
+                    getNotificationRequest.open("POST", baseUrl+"/api/notification/getNotificationSummary");
+                    getNotificationRequest.setRequestHeader("Authorization", "Bearer " + authorization);
+                    getNotificationRequest.setRequestHeader("X-API-KEY", authToken);
+                    getNotificationRequest.send(JSON.stringify({ "scop": "machine", "scopvalue": serviceTag, "passlevel": passlevel, "AgentName": window.NOW.user_name, "AgentEmail": window.NOW.user_email}));
+                } catch (error) {
+                    console.log(error);
+                }
+                
+        }
+            else {
+                document.getElementById("errorTab3").style.display = "block";
+                document.getElementById("notificationTab").style.display = "none";
+            }    
+        }
+
+        function getProfileTiles(nid, name, type, index) {
+            var authorization, authToken = "";
+            if (existingsession = checkSessionValidity()) {
+                authorization = existingsession.Authorization;
+                authToken =  existingsession.AuthToken;
+            }
+            else {
+                var newsession = createNewSession(false);
+                authorization = newsession.Authorization;
+                authToken =  newsession.AuthToken;
+            }
+            var profileTileRequest = new XMLHttpRequest();
+            var profileTileResponse = null;
+            profileTileRequest.onreadystatechange = function () {
+                if (profileTileRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                    if (profileTileRequest.status == 200) {
+                        var profileTiles = JSON.parse(profileTileRequest.responseText);
+                        var heit = 485;
+                        var wid = 700;
+                        var lef = screen.width / 2 - wid / 2;
+                        var top = screen.height / 2 - heit / 2;
+                        var win = window.open("about:blank", nid, "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=" + wid + ",height=" + heit + ",top=" + top + ",left=" + lef);
+                        try{
+                            setTimeout(function() {
+                                if (win == null || typeof(win)=='undefined') {  
+                                    alert('Pop Ups are Disabled. Please enable it and Click on Fix Now Again.!'); 
+                                }
+                                else{ 
+                                    win.focus();
+                                    win.document.head.innerHTML ='<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />';
+                                    win.document.head.innerHTML += '<style>.repair {float: right;width: 13%;height: auto;min-height: 35px;background: #48b2e4;border-radius: 5px;text-align: center;font-size: 15px;position: absolute;right: 23px;top: 23px;} .repair a{color: white;display: block;text-decoration: none;padding: 7px;}.panel-title{cursor:pointer}</style>';
+                                    var jscript = win.document.createElement("script");
+                                    var titl = win.document.createElement("title");
+                                    titl.innerHTML = name + '-' + serviceTag;
+                                    win.document.head.appendChild(titl);
+                                    jscript.innerHTML = notificationFix.toString();
+                                    jscript.innerHTML += addNotes.toString();
+                                    jscript.innerHTML += 'var serviceTag = "' + serviceTag + '";var ws = "";var serviceNowUsername = "' + serviceNowUsername + '";var currentntNotificationData = ' + JSON.stringify(notificationResponse[0][type][index]['details']) + ';var nocName="' + name + '";var nid="' + nid + '";var stausbarid="";var wsurl="'+wsurl+'";var reportingurl="'+reportingurl+'";var baseUrl="'+baseUrl+'";var jwtToken="'+jwtToken+'";var passlevel="'+passlevel+'";var serviceNowEmail="'+window.NOW.user_email+'";var sysId="'+sysId+'";'
+                                    jscript.innerHTML += ShowJobProgress.toString();
+                                    jscript.innerHTML += checkSessionValidity.toString();
+                                    jscript.innerHTML += createNewSession.toString();
+                                    jscript.innerHTML += initializeNode.toString();
+                                    jscript.innerHTML += expandDiv.toString();
+                                    jscript.innerHTML += "initializeNode('" + window.NOW.user_email + "','" + window.NOW.user_name + "');";
+                                    win.document.head.appendChild(jscript);
+                                    var par1 = "this,'defaultfix'";
+                                    var htmlBody = '<div class="panel-group"><div class="panel panel-default"><div class="panel-heading"><h2 class="panel-title" onclick="expandDiv('+par1+');">'+
+                                                    '<i class="glyphicon glyphicon-minus"></i><span style="padding:10px;">Default Fix</span></h2>'+
+                                                    '<div class="panel-collapse collapse" style="padding-top: 15px;display:block;" id="defaultfix"><ul id="dwquidfyh">';
+                                    if (profileTiles.defaultfix.status === 'success') {
+                                        var divid = 'notificationItemStatusbar' + nid + '_' + profileTiles.troubleshooting.profile;
+                                        var params = "this,'" + divid + "','" + profileTiles.defaultfix.parentId + "','" + profileTiles.defaultfix.profile + "', '" + profileTiles.defaultfix.dart + "', '" + profileTiles.defaultfix.variable + "', '" + profileTiles.defaultfix.shortDesc + "', '" + profileTiles.defaultfix.shortDesc + "','" + profileTiles.defaultfix.page + "', '" + profileTiles.defaultfix.menuItem + "'";
+                                        htmlBody += '<li class="list-group-item"><div class="clearfix">' +
+                                                '<div class="reset" style="width: 83%;"><h4>Default Fix'+
+                                                '</h4><p>' + decodeURIComponent((profileTiles.defaultfix.description + '').replace(/\+/g, '%20')) + '</p></div>' +
+                                                '<div id="maximize11" class="repair" style="display: block;">' +
+                                                '<a href="javascript:;" onclick="notificationFix('+params+');">Run</a></div></div>' +
+                                                '<div id="' + divid + '" style="color: red;text-align: right;">' +
+                                                '</div>' +
+                                                '</li>';
+                                    }
+                                    else {
+                                        htmlBody += '<p>Default Fix Not Available for this Notification</p>';
+                                    }
+                                    htmlBody += '</ul></div></div>';
+                                    var par2 = "this,'otherfixes'";
+                                    htmlBody += '<div class="panel-heading"><h2 class="panel-title" onclick="expandDiv('+par2+');">'+
+                                                    '<i class="glyphicon glyphicon-plus"></i><span style="padding:10px;">Other Fixes</span></h2>'+
+                                                    '<div class="panel-collapse collapse" style="padding-top: 15px;" id="otherfixes"><ul>';
+                                    for (var i = 0; i != profileTiles.troubleshooting.data.length; i++) {
+                                        var divid = 'notificationItemStatusbar' + nid + '_' + profileTiles.troubleshooting.data[i].profile;
+                                        divid = divid.replace(/\s/g, '');
+                                        var parms2 = "this,'" + divid + "','" + profileTiles.troubleshooting.data[i].parentId + "', '" + profileTiles.troubleshooting.data[i].profile + "', '" + profileTiles.troubleshooting.data[i].dart + "', '" + profileTiles.troubleshooting.data[i].variable + "', '" + profileTiles.troubleshooting.data[i].shortDesc + "', '" + profileTiles.troubleshooting.data[i].shortDesc + "','" + profileTiles.troubleshooting.data[i].page + "', '" + profileTiles.troubleshooting.data[i].menuItem +"'";
+                                        htmlBody += '<li class="list-group-item"><div class="clearfix">' +
+                                                '<div class="reset" style="width: 83%;"><h4>' + profileTiles.troubleshooting.data[i].shortDesc +
+                                                '</h4><p>' + decodeURIComponent((profileTiles.troubleshooting.data[i].description + '').replace(/\+/g, '%20')) + '</p></div>' +
+                                                '<div id="maximize11" class="repair" style="display: block;">' +
+                                                '<a href="javascript:;" onclick="notificationFix('+parms2+');">Run</a></div></div>' +
+                                                '<div id="' + divid + '" style="min-height: 15px;">' +
+                                                '</div>' +
+                                                '</li>';
+                                    }
+                                    htmlBody += '</ul></div></div></div></div>';
+                                    win.document.body.innerHTML = htmlBody;
+                                }
+                            }, 300); 
+                        }
+                        catch(err){
+                            console.log("Error Occured while opening popup window!");
+                            console.log(err);
+                        }
+                    }
+                    else if (profileTileRequest.status == 400) {
+                        console.log('There was an error 400');
+                    }
+                    else {
+                        console.log('something else other than 200 was returned');
+                    }
+                }
+            };
+            try {
+                if(authorization == "") throw "Authorization String Not set In Notification Summary Request!";
+                if(authToken == "") throw "Authtoken String Not set In Notification Summary Request!";
+                if(serviceTag == "") throw "Servicetag Not set In Notification Summary Request!";
+                if(nid == "") throw "Notification ID Not set In Get Profile Tiles Request!";
+                profileTileRequest.open("POST", baseUrl+"/api/profile/getProfileTiles");
+                profileTileRequest.setRequestHeader("Authorization", "Bearer " + authorization);
+                profileTileRequest.setRequestHeader("X-API-KEY", authToken);
+                profileTileRequest.send(JSON.stringify({ "scop": "machine", "scopvalue": serviceTag, "passlevel": passlevel, "machine": serviceTag, "nid": nid, "AgentName": window.NOW.user_name, "AgentEmail": window.NOW.user_email}));
+            } catch (error) {
+                
+            }
+        }
+
+        function notificationFix(thisVal, statusbar, parentId, profile, dart, variable, varValue, description, page, menuitem) {
+            notificationdiv = statusbar;
+            var authorization, authToken = "";
+            if (existingsession = checkSessionValidity()) {
+                authorization = existingsession.Authorization;
+                authToken =  existingsession.AuthToken;
+            }
+            else {
+                var newsession = createNewSession(false);
+                authorization = newsession.Authorization;
+                authToken =  newsession.AuthToken;
+            }
+            var profileRequest = new XMLHttpRequest();
+            profileRequest.onreadystatechange = function () {
+                if (profileRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                    if (profileRequest.status == 200) {
+                        addNotes(profile+ " Tile Pushed Successfully");
+                        var JobData = {};
+                        JobData['Type'] = 'ExecuteJob';
+                        JobData['ServiceTag'] = serviceTag;
+                        ws.send(JSON.stringify(JobData));
+                        thisVal.style.pointerEvents = "none";
+                        thisVal.innerHTML = "Solution Pushed";
+                        thisVal.parentElement.style.backgroundColor = "green";
+                    }
+                    else if (profileRequest.status == 400) {
+                        console.log('There was an error 400');
+                    }
+                    else {
+                        console.log('something else other than 200 was returned');
+                    }
+                }
+            };
+            try{
+                if(authorization == "") throw "Authorization String Not set In Notification Fix Request!";
+                if(authToken == "") throw "Authtoken String Not set In Notification Fix Request!";
+                profileRequest.open("POST", baseUrl+"/api/profile/actionNotifications");
+                profileRequest.setRequestHeader("Authorization", "Bearer " + authorization);
+                profileRequest.setRequestHeader("X-API-KEY", authToken);
+                profileRequest.send(JSON.stringify({ "scop": "machine", "scopvalue": serviceTag, "passlevel": passlevel, "machine": serviceTag, "shortDesc": description, "profileName": profile, "dartNumber": dart, "variable": variable, "snusername": serviceNowUsername, "details": currentntNotificationData, "nid": nid, "nocName": nocName, "AgentName": serviceNowUsername, "AgentEmail": serviceNowEmail}));
+            }
+            catch(error){
+                console.log(error);
+            }
+            
+        }
+
+        function changeIcon(obj) {
+            obj.classList.add('disabledclick');
+            var ele = obj.getElementsByClassName("glyphicon")[0];
+            if (ele.classList.contains('glyphicon-plus') == true) {
+                ele.classList.remove('glyphicon-plus');
+                ele.classList.add('glyphicon-minus');
+            }
+            else {
+                ele.classList.remove('glyphicon-minus');
+                ele.classList.add('glyphicon-plus');
+            }
+            setTimeout(function() {
+                obj.classList.remove('disabledclick');
+            }, 400);
+        }
+
+        function initializeNode(email, username){
+            ws = new WebSocket('wss://'+wsurl);
+            ws.onopen = function () {
+                    console.log('Connecting to Communication Server Success');
+                    var ConnectData = {};
+                    ConnectData['Type'] = 'Dashboard';
+                    ConnectData['AgentId'] = email;
+                    ConnectData['AgentName'] = username;
+                    ConnectData['ReportingURL'] = reportingurl;
+                    ws.send(JSON.stringify(ConnectData));
+            };
+            ws.onmessage = function (msg) {
+                    ShowJobProgress(msg);
+            };
+            ws.onclose = function () {
+                    setTimeout(function () {
+                            wsconnect(wsurl);
+                    }, 2000);
+            };
+        }
+
+        document.getElementById('servicetagBtn3').addEventListener('click', function() {
+            serviceTag = document.getElementById('servicetag3').value;
+            if (serviceTag == '') {
+                document.getElementById("servicetag3").style.borderColor = "red";
+            }
+        });
+
+        function expandDiv(obj, divId){
+            obj.classList.add('disabledclick');
+            var ele = obj.getElementsByClassName("glyphicon")[0];
+            if (ele.classList.contains('glyphicon-plus') == true) {
+                ele.classList.remove('glyphicon-plus');
+                ele.classList.add('glyphicon-minus');
+                document.getElementById(divId).style.display = "block"; 
+            }
+            else {
+                ele.classList.remove('glyphicon-minus');
+                ele.classList.add('glyphicon-plus');
+                document.getElementById(divId).style.display = "none"; 
+            }
+            setTimeout(function() {
+                obj.classList.remove('disabledclick');
+            }, 400);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('servicetagBtn3').addEventListener('click', function() {
+                serviceTag = document.getElementById('servicetag3').value;
+                if (serviceTag == '') {
+                    document.getElementById("servicetag3").style.borderColor = "red";
+                }
+            });
+            
+            document.getElementById('sitelist3').addEventListener('change', function () {
+                passlevel =  document.getElementById('sitelist3').value;
+                document.getElementById('sitelist2').selectedIndex = document.getElementById('sitelist3').selectedIndex;
+                document.getElementById('sitelist1').selectedIndex = document.getElementById('sitelist3').selectedIndex;
+                document.getElementById('sitelist5').selectedIndex = document.getElementById('sitelist3').selectedIndex;
+            });
+        });
+    </script>
+</j:jelly>]]></xml>
+    </sys_ui_macro>
+</record_update>

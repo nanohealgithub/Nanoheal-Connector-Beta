@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[var customernum = "";
+var uname = "";
+var pass = "";
+var jwtToken = "";
+var reportingUrl = "";
+var communicationChannel = "";
+var apiurl = "";
+initializeConfig();
+var dataUpdated = false;
+function refreshConfig() {
+    document.getElementById("errorMsg").style.display = "none";
+    document.getElementById("successMsg").style.display = "none";
+    document.getElementById("loadingMsg").style.display = "block";
+    var reportingRequest = new XMLHttpRequest();
+    customernum = document.getElementById("x_179178_nanohealc_nanoheal_configuration.customer_number").value;
+    uname = document.getElementById("x_179178_nanohealc_nanoheal_configuration.username").value;
+    pass = document.getElementById("x_179178_nanohealc_nanoheal_configuration.password").value;
+    var terminate = false;
+    if (customernum == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.customer_number").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.customer_number").style.borderColor = "";
+    }
+    if (uname == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.username").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.username").style.borderColor = "";
+    }
+    if (pass == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.password").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.password").style.borderColor = "";
+    }
+    if (terminate) {
+        document.getElementById("loadingMsg").style.display = "none";
+        return;
+    }
+    document.getElementById("x_179178_nanohealc_nanoheal_configuration.reporting_url").value = "";
+    document.getElementById("x_179178_nanohealc_nanoheal_configuration.communication_channel").value = "";
+    document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_token").value = "";
+    document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_url").value = "";
+    var reportingdata = "";
+    reportingRequest.onreadystatechange = function () {
+        if (reportingRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+            if (reportingRequest.status == 200) {
+                reportingdata = reportingRequest.responseText;
+                reportingdata = JSON.parse(reportingdata);
+                try {
+                    if (reportingdata.status == 'sucess') {
+                        reportingUrl = reportingdata.reportURL;
+                        communicationChannel = reportingdata.nodeURL;
+                        apiurl = reportingdata.apiURL;
+                        getToken();
+                    }
+                    else {
+                        throw "Something went wrong!";
+                    }
+                }
+                catch (err) {
+                    document.getElementById("loadingMsg").style.display = "none";
+                    document.getElementById("errorMsg").style.display = "block";
+                    console.log(err);
+                }
+            }
+        }
+    }
+    try {
+        var params = { "custid": customernum, "act": "live" };
+        var requrl = "https://provision.nanoheal.com/provision/getCRMReportURL.php";
+        reportingRequest.open("POST", requrl);
+        reportingRequest.send(JSON.stringify(params));
+    } catch (error) {
+        document.getElementById("errorMsg").style.display = "block";
+        document.getElementById("successMsg").style.display = "none";
+        document.getElementById("loadingMsg").style.display = "none";
+        console.log(error);
+    }
+
+}
+
+function getToken() {
+    var validateCustomerRequest = new XMLHttpRequest();
+    var validateCustomerResponse = "";
+    document.getElementById("successMsg").style.display = "none";
+    document.getElementById("saveSuccessMsg").style.display = "none";
+    document.getElementById("errorMsg").style.display = "none";
+    
+    validateCustomerRequest.onreadystatechange = function () {
+        if (validateCustomerRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+            if (validateCustomerRequest.status == 200) {
+                try {
+                    validateCustomerResponse = JSON.parse(validateCustomerRequest.responseText);
+                    if (validateCustomerResponse.status == "Success") {
+                        document.getElementById("loadingMsg").style.display = "none";
+                        jwtToken = validateCustomerResponse.Authorization;
+                        document.getElementById("x_179178_nanohealc_nanoheal_configuration.reporting_url").value = reportingUrl;
+                        document.getElementById("x_179178_nanohealc_nanoheal_configuration.communication_channel").value = communicationChannel;
+                        document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_token").value = jwtToken;
+                        document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_url").value = apiurl;
+                        document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_url").style.borderColor = "";
+                        document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_token").style.borderColor = "";
+                        document.getElementById("x_179178_nanohealc_nanoheal_configuration.communication_channel").style.borderColor = "";
+                        document.getElementById("x_179178_nanohealc_nanoheal_configuration.reporting_url").style.borderColor = "";
+                        document.getElementById("successMsg").style.display = "block";
+                        document.getElementById("loadingMsg").style.display = "none";
+                        document.getElementById("storeConfigBtn").style.pointerEvents = "all";
+                        dataUpdated = true;
+                    }
+                    else{
+                        throw "Something went wrong!";
+                    }
+                }
+                catch (err) {
+                    document.getElementById("storeConfigBtn").style.pointerEvents = "none";
+                    document.getElementById("loadingMsg").style.display = "none";
+                    document.getElementById("errorMsg").style.display = "block";
+                }
+            }
+            else {
+                document.getElementById("storeConfigBtn").style.pointerEvents = "none";
+                document.getElementById("loadingMsg").style.display = "none";
+                document.getElementById("errorMsg").style.display = "block";
+            }
+        }
+    }
+    try {
+        if (reportingUrl == "") {
+            throw "Reporting URL is empty";
+        }
+        if (communicationChannel == "") throw "Communication channel is empty";
+        validateCustomerRequest.open("POST", apiurl + "/api/validateCRMDetails");
+        validateCustomerRequest.send(JSON.stringify({ "username": uname, "userpass": pass }));
+    } catch (error) {
+        console.log(error);
+        document.getElementById("storeConfigBtn").style.pointerEvents = "none";
+        document.getElementById("successMsg").style.display = "none";
+        document.getElementById("saveSuccessMsg").style.display = "none";
+        document.getElementById("loadingMsg").style.display = "none";
+        document.getElementById("errorMsg").style.display = "block";
+    }
+}
+
+function initializeConfig() {
+    try {
+        var rec = new GlideRecord('x_179178_nconnecto_nanoheal_configuration');
+        rec.query();
+        if (rec.next()) {
+            document.getElementById("x_179178_nanohealc_nanoheal_configuration.customer_number").value = rec.customer_number;
+            document.getElementById("x_179178_nanohealc_nanoheal_configuration.username").value = rec.username;
+            document.getElementById("x_179178_nanohealc_nanoheal_configuration.reporting_url").value = rec.reporting_url;
+            document.getElementById("x_179178_nanohealc_nanoheal_configuration.communication_channel").value = rec.communication_channel;
+            document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_token").value = rec.api_token;
+            document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_url").value = rec.api_url;
+            console.log("Updated");
+        }
+    }
+    catch (error) {
+        console.log(error);
+        document.getElementById("storeConfigBtn").style.pointerEvents = "none";
+        document.getElementById("successMsg").style.display = "none";
+        document.getElementById("saveSuccessMsg").style.display = "none";
+        document.getElementById("loadingMsg").style.display = "none";
+        document.getElementById("errorMsg").style.display = "block";
+    }
+}
+
+function storeConfig() {
+    var terminate = false;
+    if (!dataUpdated) return;
+    document.getElementById("saveSuccessMsg").style.display = "none";
+    document.getElementById("errorMsg2").style.display = "none";
+    document.getElementById("loadingMsg2").style.display = "block";
+    customernum = document.getElementById("x_179178_nanohealc_nanoheal_configuration.customer_number").value;
+    uname = document.getElementById("x_179178_nanohealc_nanoheal_configuration.username").value;
+    pass = document.getElementById("x_179178_nanohealc_nanoheal_configuration.password").value;
+    apiurl = document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_url").value;
+    jwtToken = document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_token").value;
+    reportingUrl = document.getElementById("x_179178_nanohealc_nanoheal_configuration.reporting_url").value;
+    communicationChannel = document.getElementById("x_179178_nanohealc_nanoheal_configuration.communication_channel").value;
+    if (customernum == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.customer_number").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.customer_number").style.borderColor = "";
+    }
+    if (uname == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.username").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.username").style.borderColor = "";
+    }
+    if (pass == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.password").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.password").style.borderColor = "";
+    }
+    if (apiurl == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_url").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_url").style.borderColor = "";
+    }
+    if (jwtToken == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_token").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.api_token").style.borderColor = "";
+    }
+    if (reportingUrl == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.reporting_url").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.reporting_url").style.borderColor = "";
+    }
+    if (communicationChannel == "") {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.communication_channel").style.borderColor = "#f95050";
+        terminate = true;
+    }
+    else {
+        document.getElementById("x_179178_nanohealc_nanoheal_configuration.communication_channel").style.borderColor = "";
+    }
+    if (terminate) {
+        document.getElementById("loadingMsg2").style.display = "none";
+        return;
+    }
+    try {
+        var rec = new GlideRecord('x_179178_nconnecto_nanoheal_configuration');
+        rec.addQuery('customer_number', customernum);
+        rec.query();
+        if (rec.next()) {
+            console.log("Updating record customer num " + customernum);
+            rec.reporting_url = reportingUrl;
+            rec.api_token = jwtToken;
+            rec.api_url = apiurl;
+            rec.communication_channel = communicationChannel;
+            rec.username = uname;
+            rec.customer_number = customernum;
+            rec.update();
+        }
+        else {
+            rec.reporting_url = reportingUrl;
+            rec.api_token = jwtToken;
+            rec.api_url = apiurl;
+            rec.communication_channel = communicationChannel;
+            rec.username = uname;
+            rec.customer_number = customernum;
+            rec.insert();
+        }
+        document.getElementById("loadingMsg2").style.display = "none";
+        document.getElementById("saveSuccessMsg").style.display = "block";
+    }
+    catch (error) {
+        console.log(error);
+        document.getElementById("saveSuccessMsg").style.display = "none";
+        document.getElementById("loadingMsg2").style.display = "none";
+        document.getElementById("errorMsg2").style.display = "block";
+    }
+}]]></client_script>
+        <description>Nanoheal Configuration</description>
+        <direct>false</direct>
+        <endpoint>x_179178_nconnecto_Nanoheal Configuration.do</endpoint>
+        <html><![CDATA[<style>
+    .moreinfo {
+        padding-top: 4px;
+        height: auto;
+        min-height: 35px;
+        background: #48b2e4;
+        color: #ffff;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 15px;
+        display: block;
+    }
+    
+    .moreinfo a {
+        color: #ffff;
+        text-decoration: none;
+    }
+    
+    form {
+        margin-top: 20px;
+    }
+    
+    label {
+        font-weight: 600;
+    }
+</style>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="x_179178_nanohealc_nanoheal_configuration.customer_number"><span id="" title="" mandatory="true" class="mandatory_populated required-marker" oclass="mandatory_populated" aria-label="" data-original-title="" style="display: inline;"></span>Customer Number</label>
+            <input type="text" class="form-control" id="x_179178_nanohealc_nanoheal_configuration.customer_number" placeholder="Customer Number"
+            />
+        </div>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label for="x_179178_nanohealc_nanoheal_configuration.username"><span id="" title="" mandatory="true" class="mandatory_populated required-marker" oclass="mandatory_populated" aria-label="" data-original-title="" style="display: inline;"></span>Email</label>
+                <input type="email" class="form-control" id="x_179178_nanohealc_nanoheal_configuration.username" placeholder="Email" />
+            </div>
+            <div class="col-md-6">
+                <label for="x_179178_nanohealc_nanoheal_configuration.password"><span id="" title="" mandatory="true" class="mandatory_populated required-marker" oclass="mandatory_populated" aria-label="" data-original-title="" style="display: inline;"></span>Password</label>
+                <input type="password" class="form-control" id="x_179178_nanohealc_nanoheal_configuration.password" placeholder="Password"
+                />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-2">
+                <div class="moreinfo"><a href="javascript:refreshConfig()" style="padding: 3px;display: block;">Validate/Refresh</a></div>
+            </div>
+            <div class="col-md-2" id="loadingMsg" style="display:none;">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/fancybox_loading.gif" style="height: 30px;" />
+            </div>
+            <div class="col-md-7" style="color:red;display:none;" id="errorMsg">
+                Something went wrong! please verify all the details
+            </div>
+            <div class="col-md-7" style="color:green;display:none;" id="successMsg">
+                Application Configured successfully, please click on Submit to store configuration data!</div>
+        </div>
+        <div class="form-group">
+            <label for="x_179178_nanohealc_nanoheal_configuration.api_url"><span id="" title="" mandatory="true" class="mandatory_populated required-marker" oclass="mandatory_populated" aria-label="" data-original-title="" style="display: inline;"></span>API Url</label>
+            <input type="text" class="form-control" id="x_179178_nanohealc_nanoheal_configuration.api_url" placeholder="API Url" readonly="true"
+            />
+        </div>
+        <div class="form-group">
+            <label for="x_179178_nanohealc_nanoheal_configuration.api_token"><span id="" title="" mandatory="true" class="mandatory_populated required-marker" oclass="mandatory_populated" aria-label="" data-original-title="" style="display: inline;"></span>API Token</label>
+            <textarea class="form-control" id="x_179178_nanohealc_nanoheal_configuration.api_token" placeholder="API Token" readonly="true"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="x_179178_nanohealc_nanoheal_configuration.communication_channel"><span id="" title="" mandatory="true" class="mandatory_populated required-marker" oclass="mandatory_populated" aria-label="" data-original-title="" style="display: inline;"></span>Communication Channel</label>
+            <input type="text" class="form-control" id="x_179178_nanohealc_nanoheal_configuration.communication_channel" placeholder="Communication Channel"
+                readonly="true" />
+        </div>
+        <div class="form-group">
+            <label for="x_179178_nanohealc_nanoheal_configuration.reporting_url"><span id="" title="" mandatory="true" class="mandatory_populated required-marker" oclass="mandatory_populated" aria-label="" data-original-title="" style="display: inline;"></span>Reporting Url</label>
+            <input type="text" class="form-control" id="x_179178_nanohealc_nanoheal_configuration.reporting_url" placeholder="Reporting Url"
+                readonly="true" />
+        </div>
+        <div class="form-group row">
+        <div class="col-md-2">
+                <div class="moreinfo"><a href="javascript:storeConfig()" id="storeConfigBtn" style="pointer-events:none;display:block;padding:3px;">Submit</a></div>
+            </div>
+            <div class="col-md-2" id="loadingMsg2" style="display:none;">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/fancybox_loading.gif" style="height: 30px;" />
+            </div>
+            <div class="col-md-7" style="color:red;display:none;" id="errorMsg2">
+                Something went wrong! please verify all the details
+            </div>
+            <div class="col-md-7" style="color:green;display:none;" id="saveSuccessMsg">
+                Configuration stored successfully!!</div>
+        </div>
+    </form>
+</div>]]></html>
+        <name>Nanoheal Configuration</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-09-19 05:21:47</sys_created_on>
+        <sys_id>65f89d87db6023003bd09c68db9619ce</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Nanoheal Configuration</sys_name>
+        <sys_package display_value="NConnectorBeta" source="x_179178_nconnecto">41a21d43db6023003bd09c68db96191a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NConnectorBeta">41a21d43db6023003bd09c68db96191a</sys_scope>
+        <sys_update_name>sys_ui_page_65f89d87db6023003bd09c68db9619ce</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-19 06:10:35</sys_updated_on>
+    </sys_ui_page>
+</record_update>
