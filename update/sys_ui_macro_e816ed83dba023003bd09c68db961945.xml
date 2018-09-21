@@ -11,14 +11,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2018-09-19 06:16:38</sys_created_on>
         <sys_id>e816ed83dba023003bd09c68db961945</sys_id>
-        <sys_mod_count>3</sys_mod_count>
+        <sys_mod_count>12</sys_mod_count>
         <sys_name>Nanoheal Basic Info</sys_name>
         <sys_package display_value="NConnectorBeta" source="x_179178_nconnecto">41a21d43db6023003bd09c68db96191a</sys_package>
         <sys_policy>protected</sys_policy>
         <sys_scope display_value="NConnectorBeta">41a21d43db6023003bd09c68db96191a</sys_scope>
         <sys_update_name>sys_ui_macro_e816ed83dba023003bd09c68db961945</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2018-09-19 07:53:27</sys_updated_on>
+        <sys_updated_on>2018-09-21 12:55:37</sys_updated_on>
         <xml><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
 <j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
     <style>
@@ -139,9 +139,9 @@
         <span class="icon-loading"></span>Loading...
     </div>
     <div id="errormessage1" class="info-text" style="display: none;">Please Configure Nanoheal Application</div>
-    <div id="info1" class="info-text"></div>
+    <h5 id="info1" class="info-text"></h5>
     <div id="errorTab1" style="display: none;">
-        <h5 class="info-text" id="servicetagErrorMsg1">CI Item Is Not Selected. Please Select Asset From CI or Enter The Computer Name and Click On Submit.</h5>
+        <h5 class="info-text" id="servicetagErrorMsg1">Enter The Computer Name and Click On Submit.</h5>
         <div class="row info-text">
             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                 <input type="text" class="form-control" id="servicetag1" autocomplete="off" placeholder="Computer Name" list="serviceTagList" />
@@ -927,16 +927,19 @@
                         validateServiceTagResponse = JSON.parse(validateServiceTag.responseText);
                         if (validateServiceTagResponse.machinestatus == "Nanoheal not installed on device") {
                             var msg = validateServiceTagResponse.machinestatus;
-                            document.getElementById("servicetagErrorMsg1").innerHTML = msg;
-                            document.getElementById("servicetagErrorMsg2").innerHTML = msg;
-                            document.getElementById("servicetagErrorMsg3").innerHTML = msg;
-                            //                        document.getElementById("servicetagErrorMsg4").innerHTML = msg;
-                            document.getElementById("servicetagErrorMsg5").innerHTML = msg;
-                            document.getElementById("errorTab1").style.display = "block";
-                            document.getElementById("errorTab2").style.display = "block";
-                            document.getElementById("errorTab3").style.display = "block";
-                            //                        document.getElementById("errorTab4").style.display = "block";
-                            document.getElementById("errorTab5").style.display = "block";
+                            document.getElementById('basicInfoTab').style.display = 'none';
+                            document.getElementById('interactiveTab').style.display = 'none';
+                            document.getElementById('actionHistoryTab').style.display = 'none';
+                            document.getElementById('notificationTab').style.display = 'none';
+                            document.getElementById('info1').innerHTML = msg;
+                            document.getElementById('info2').innerHTML = msg;
+                            document.getElementById('info3').innerHTML = msg;
+                            document.getElementById('info5').innerHTML = msg;
+                            document.getElementById('info1').style.display = 'block';
+                            document.getElementById('info2').style.display = 'block';
+                            document.getElementById('info3').style.display = 'block';
+                            document.getElementById('info5').style.display = 'block';
+		                    clearSiteDropDown();
                         } else {
                             document.getElementById("machinestatus1").innerHTML = validateServiceTagResponse.machinestatus;
                             document.getElementById("machinename1").innerHTML = validateServiceTagResponse.machinename;
@@ -1002,26 +1005,7 @@
                         document.getElementById("loading5").style.display = "block";
                     getMachineDetailsRequest.onreadystatechange = function () {
                         if (getMachineDetailsRequest.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
-                            var select1 = document.getElementById('sitelist1');
-                            var len1 = select1.length;
-                            for (i = 1; i != len1; i++) {
-                                select1.remove(len1-i);
-                            }
-                            var select2 = document.getElementById('sitelist2');
-                            var len2 = select2.length;
-                            for (i = 1; i != len2; i++) {
-                                select2.remove(len2-i);
-                            }
-                            var select3 = document.getElementById('sitelist3');
-                            var len3 = select3.length;
-                            for (i = 1; i != len3; i++) {
-                                select3.remove(len3-i);
-                            }
-                            var select5 = document.getElementById('sitelist5');
-                            var len5 = select5.length;
-                            for (i = 1; i != len5; i++) {
-                                select5.remove(len5-i);
-                            }
+                            clearSiteDropDown();
                             if (getMachineDetailsRequest.status == 200) {
                                 document.getElementById('info1').innerHTML = '';
                                 document.getElementById('info1').style.display = 'none';
@@ -1285,6 +1269,29 @@
                     option.value = val;
                     dataListRef.appendChild(option);
                 }
+            }
+        }
+		
+		function clearSiteDropDown(){
+            var select1 = document.getElementById('sitelist1');
+            var len1 = select1.length;
+            for (i = 1; i != len1; i++) {
+                select1.remove(len1-i);
+            }
+            var select2 = document.getElementById('sitelist2');
+            var len2 = select2.length;
+            for (i = 1; i != len2; i++) {
+                select2.remove(len2-i);
+            }
+            var select3 = document.getElementById('sitelist3');
+            var len3 = select3.length;
+            for (i = 1; i != len3; i++) {
+                select3.remove(len3-i);
+            }
+            var select5 = document.getElementById('sitelist5');
+            var len5 = select5.length;
+            for (i = 1; i != len5; i++) {
+                select5.remove(len5-i);
             }
         }
         
