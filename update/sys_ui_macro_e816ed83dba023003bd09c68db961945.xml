@@ -11,14 +11,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2018-09-19 06:16:38</sys_created_on>
         <sys_id>e816ed83dba023003bd09c68db961945</sys_id>
-        <sys_mod_count>12</sys_mod_count>
+        <sys_mod_count>14</sys_mod_count>
         <sys_name>Nanoheal Basic Info</sys_name>
         <sys_package display_value="NConnectorBeta" source="x_179178_nconnecto">41a21d43db6023003bd09c68db96191a</sys_package>
         <sys_policy>protected</sys_policy>
         <sys_scope display_value="NConnectorBeta">41a21d43db6023003bd09c68db96191a</sys_scope>
         <sys_update_name>sys_ui_macro_e816ed83dba023003bd09c68db961945</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2018-09-21 12:55:37</sys_updated_on>
+        <sys_updated_on>2018-09-24 13:04:19</sys_updated_on>
         <xml><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
 <j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
     <style>
@@ -1263,8 +1263,8 @@
             var dataListRef = document.getElementById("serviceTagList");
             dataListRef.innerHTML = "";
             for(var i=0;i!= serviceTagArr.length; i++){
-                var val = serviceTagArr[i];
-                if(val.indexOf(key)==0){
+                var val = serviceTagArr[i].toUpperCase();
+                if(val.indexOf(key.toUpperCase())==0){
                     var option = document.createElement('option');
                     option.value = val;
                     dataListRef.appendChild(option);
